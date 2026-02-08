@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Modern Weather App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.3);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            color: #2d3436;
+        }
+
+        h1 {
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #444;
+        }
+
+        #myForm {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        input[type="text"] {
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.8);
+            outline: none;
+            width: 250px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 280px;
+        }
+
+        input[type="submit"] {
+            padding: 12px 25px;
+            border-radius: 25px;
+            border: none;
+            background: #6c5ce7;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background: #a29bfe;
+        }
+
+        .weather-wrapper {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            width: 400px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .weather-header {
+            grid-column: span 2;
+            text-align: center;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 20px;
+        }
+
+        .weather-icon {
+            width: 100px;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
+        }
+
+        .weather-place {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: block;
+        }
+
+        .weather-temperature {
+            font-size: 3rem;
+            font-weight: 600;
+            display: block;
+            margin: 10px 0;
+        }
+
+        p { margin: 0; font-size: 0.9rem; }
+        strong { color: #555; font-weight: 600; }
+        .capitalize { text-transform: capitalize; }
+        .hide { display: none !important; }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Weather Forecast</h1>
+
+    <form id="myForm">
+        <input type="text" id="city" required placeholder="Enter city (e.g. London, UK)">
+        <input type="submit" value="Get Weather">
+    </form>
+
+    <div class="weather-wrapper hide">
+        <div class="weather-header">
+            <img src="" class="weather-icon" alt="Icon" />
+            <span class="weather-place"></span>
+            <span class="weather-temperature"></span>
+            <p><span class="weather-min-temperature"></span> / <span class="weather-max-temperature"></span></p>
+            <p class="weather-description capitalize" style="margin-top: 5px; font-weight: 300;"></p>
+        </div>
+
+        <div class="stat-box">
+            <strong>Humidity</strong><br />
+            <span class="weather-humidity"></span>
+        </div>
+
+        <div class="stat-box">
+            <strong>Wind Speed</strong><br />
+            <span class="weather-wind-speed"></span>
+        </div>
+
+        <div class="stat-box">
+            <strong>Sunrise</strong><br />
+            <span class="weather-sunrise"></span>
+        </div>
+
+        <div class="stat-box">
+            <strong>Sunset</strong><br />
+            <span class="weather-sunset"></span>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="../src/openweather.js"></script>
+
+    <script>
+        $(function() {
+            $('#myForm').on('submit', function(e) {
+                e.preventDefault();
+                getWeather($('#city').val());
+            });
+        });
+
+        function getWeather(city) {
+            $('.weather-temperature').openWeather({
+                key: 'c9d49310f8023ee2617a7634de23c2aa',
+                city: city,
+                descriptionTarget: '.weather-description',
+                windSpeedTarget: '.weather-wind-speed',
+                minTemperatureTarget: '.weather-min-temperature',
+                maxTemperatureTarget: '.weather-max-temperature',
+                humidityTarget: '.weather-humidity',
+                sunriseTarget: '.weather-sunrise',
+                sunsetTarget: '.weather-sunset',
+                placeTarget: '.weather-place',
+                iconTarget: '.weather-icon',
+                customIcons: '../src/img/icons/weather/', // Ensure this path contains your icons
+                success: function(data) {
+                    $('.weather-wrapper').hide().removeClass('hide').fadeIn(600);
+                },
+                error: function(data) {
+                    alert("City not found. Please try again.");
+                }
+            });
+        }
+    </script>
+</body>
+</html>
